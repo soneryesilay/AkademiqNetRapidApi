@@ -1,0 +1,418 @@
+﻿@model AkademiqNetRapidApi.Models.DashboardWiewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --success-color: #2ecc71;
+            --info-color: #16a2b8;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .dashboard-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            }
+
+        .card-header {
+            font-weight: 600;
+            padding: 16px 20px;
+            border-bottom: none;
+        }
+
+            .card-header i {
+                margin-right: 10px;
+            }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .currency-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .currency-card .date {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        .weather-card {
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            color: white;
+        }
+
+            .weather-card .temp {
+                font-size: 3.5rem;
+                font-weight: 700;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        .crypto-card .crypto-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .crypto-card .crypto-price {
+            font-weight: 600;
+        }
+
+        .recipe-card img {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        .news-item {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 15px;
+            margin-bottom: 12px;
+            transition: transform 0.2s ease;
+        }
+
+            .news-item:hover {
+                transform: translateX(5px);
+            }
+
+        .fuel-brand {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .fuel-price {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .fuel-date {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+        }
+
+        .section-title {
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--dark-color);
+        }
+
+        .dashboard-container {
+            padding: 30px 0;
+        }
+
+       
+
+        {
+            margin-bottom: 15px;
+        }
+
+        .currency-card .value {
+            font-size: 1.8rem;
+        }
+
+        .weather-card .temp {
+            font-size: 2.5rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container dashboard-container">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> @ViewBag.Error
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <h1 class="section-title text-center mb-4">
+            <i class="fas fa-tachometer-alt me-2"></i> Finansal Gösterge Paneli
+        </h1>
+
+        <!-- Para Birimleri ve Hava Durumu Row -->
+        <div class="row">
+            <!-- Döviz Kurları -->
+            <div class="col-lg-8">
+                <div class="row">
+                    <!-- EUR/TRY Card -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card currency-card">
+                            <div class="card-header bg-primary text-white">
+                                <i class="fas fa-euro-sign"></i> Euro - Türk Lirası
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="value">@(Model.EurTryRate != null ? Model.EurTryRate.Result.ToString("N2") + " ₺" : "Veri yok")</div>
+                                        <div class="date"><i class="far fa-calendar-alt me-1"></i> @(Model.EurTryRate != null ? Model.EurTryRate.Date.ToString("dd MMMM yyyy") : "Veri yok")</div>
+                                    </div>
+                                    <div class="display-1 text-primary opacity-25">
+                                        <i class="fas fa-euro-sign"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USD/TRY Card -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card currency-card">
+                            <div class="card-header bg-success text-white">
+                                <i class="fas fa-dollar-sign"></i> Dolar - Türk Lirası
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="value">@(Model.UsdTryRate != null ? Model.UsdTryRate.Result.ToString("N2") + " ₺" : "Veri yok")</div>
+                                        <div class="date"><i class="far fa-calendar-alt me-1"></i> @(Model.UsdTryRate != null ? Model.UsdTryRate.Date.ToString("dd MMMM yyyy") : "Veri yok")</div>
+                                    </div>
+                                    <div class="display-1 text-success opacity-25">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hava Durumu -->
+            <div class="col-lg-4">
+                <div class="dashboard-card weather-card">
+                    <div class="card-body text-center">
+                        <h3 class="mb-3"><i class="fas fa-cloud-sun"></i> İstanbul</h3>
+                        @if (Model.Weather?.list != null && Model.Weather.list.Count > 0)
+                        {
+                            var anlik = Model.Weather.list[0];
+                            <div class="temp">19°C</div>
+                            <div class="weather-desc mt-2 mb-2">Parçalı Bulutlu</div>
+                            <div class="d-flex justify-content-around mt-3">
+                                <div>
+                                    <i class="fas fa-wind me-1"></i> 12 km/s
+                                </div>
+                                <div>
+                                    <i class="fas fa-tint me-1"></i> 65%
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-light">Hava durumu verisi yok</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crypto Prices Row -->
+        <h2 class="section-title mt-4">
+            <i class="fab fa-bitcoin me-2"></i> Kripto Para Piyasası
+        </h2>
+        <div class="row">
+            @if (Model.CryptoPrices != null && Model.CryptoPrices.Count > 0)
+            {
+                @foreach (var coin in Model.CryptoPrices)
+                {
+                    <div class="col-md-3">
+                        <div class="dashboard-card crypto-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        @{
+                                            var coinSymbol = coin.symbol.Replace("USDT", "");
+                                            var iconClass = "fab fa-bitcoin";
+                                            if (coinSymbol == "ETH") iconClass = "fab fa-ethereum";
+                                            else if (coinSymbol == "BNB") iconClass = "fas fa-coins";
+                                            else if (coinSymbol == "XRP") iconClass = "fab fa-resilience";
+                                        }
+                                        <i class="@iconClass me-2 fs-1 text-warning"></i>
+                                        <div>
+                                            <h5 class="mb-0">@coinSymbol</h5>
+                                            <small class="text-muted">USDT</small>
+                                        </div>
+                                    </div>
+                                    <div class="crypto-price">$@coin.lastPrice</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Kripto para verisi bulunamadı
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Fuel Prices Row -->
+        <h2 class="section-title mt-4">
+            <i class="fas fa-gas-pump me-2"></i> İstanbul Akaryakıt Fiyatları
+            <small class="text-muted fs-6">(@Model.FuelPrices?.data?[0]?.district?.ToUpper())</small>
+        </h2>
+        <div class="row">
+            @if (Model.FuelPrices?.data != null && Model.FuelPrices.data.Count > 0)
+            {
+                @foreach (var price in Model.FuelPrices.data[0].prices.Where(p => p.dagitici_firma == "Opet" || p.dagitici_firma == "Petrol Ofisi"))
+                {
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <div class="card-header bg-info text-white">
+                                <i class="fas fa-building me-2"></i> @price.dagitici_firma
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div><i class="fas fa-gas-pump text-danger"></i></div>
+                                        <div class="fw-bold">Benzin</div>
+                                        <div class="fuel-price">@price.benzin ₺</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div><i class="fas fa-truck-monster text-primary"></i></div>
+                                        <div class="fw-bold">Motorin</div>
+                                        <div class="fuel-price">@price.motorin ₺</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div><i class="fas fa-fire text-warning"></i></div>
+                                        <div class="fw-bold">LPG</div>
+                                        <div class="fuel-price">@price.lpg ₺</div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3 fuel-date">
+                                    <i class="far fa-clock me-1"></i> Güncelleme: @price.guncellenme_tarihi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Akaryakıt fiyat verisi bulunamadı
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- News and Recipe Row -->
+        <div class="row mt-4">
+            <!-- Technology News -->
+            <div class="col-md-6">
+                <h2 class="section-title">
+                    <i class="fas fa-newspaper me-2"></i> Teknoloji Haberleri
+                </h2>
+                <div class="dashboard-card">
+                    <div class="card-body">
+                        @if (Model.LastNews != null && Model.LastNews.Count > 0)
+                        {
+                            <div class="list-group">
+                                @foreach (var news in Model.LastNews)
+                                {
+                                    <div class="news-item py-2">
+                                        <h5 class="mb-1">@news.title</h5>
+                                        <small class="text-muted">
+                                            <i class="far fa-clock me-1"></i> @DateTime.Now.AddHours(-new Random().Next(1, 12)).ToString("dd MMM, HH:mm")
+                                        </small>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> Haber verisi bulunamadı
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Random Recipe -->
+            <div class="col-md-6">
+                <h2 class="section-title">
+                    <i class="fas fa-utensils me-2"></i> Günün Yemek Tarifi
+                </h2>
+                <div class="dashboard-card recipe-card">
+                    @if (Model.RandomMeal != null)
+                    {
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="@Model.RandomMeal.strMealThumb" alt="@Model.RandomMeal.strMeal" class="img-fluid me-3" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
+                                <div>
+                                    <h4>@Model.RandomMeal.strMeal</h4>
+                                    <div class="text-muted">
+                                        <span class="badge bg-primary me-2">@Model.RandomMeal.strCategory</span>
+                                        <span class="badge bg-secondary">@Model.RandomMeal.strArea</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="recipe-instructions mt-3">
+                                <h5 class="border-bottom pb-2 mb-2">Nasıl Yapılır?</h5>
+                                <p style="max-height: 150px; overflow-y: auto;">@Model.RandomMeal.strInstructions</p>
+                                <button class="btn btn-sm btn-outline-danger mt-2">
+                                    <i class="fas fa-utensils me-1"></i> Tam Tarifi Gör
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> Tarif verisi bulunamadı
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

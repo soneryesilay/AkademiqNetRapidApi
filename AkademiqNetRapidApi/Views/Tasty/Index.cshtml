@@ -1,0 +1,30 @@
+﻿@model List<TastyApiViewModel>
+@{
+    Layout = null;
+    int count = 0;
+}
+
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<div class="container">
+    <br />
+    <br />
+    <table class="table table-bordered">
+        <tr>
+            <th>#</th>
+            <th>Görsel</th>
+            <th>Tarif Adı</th>
+            <th>Tarifi İzle</th>
+
+        </tr>
+        @foreach (var item in Model)
+        {
+            count++;
+            <tr>
+                <td>@count</td>
+                <td><img src="@item.thumbnail_url" style="width:50px;height:50px;" /></td>
+                <td>@item.name</td>
+                <td><a href="@item.original_video_url" class="btn btn-primary">Tarifi İzle</a></td>
+            </tr>
+        }
+    </table>
+</div>
